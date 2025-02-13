@@ -1,0 +1,6 @@
+pandas>=1.0
+yfinance>=0.1.70
+ta>=0.7.0
+pytz>=2020.1
+ccxt~=1.72.1
+requests~=2.27.1

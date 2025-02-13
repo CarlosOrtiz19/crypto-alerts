@@ -1,0 +1,26 @@
+# Ignore build and compilation files
+build/
+dist/
+
+# Ignore log files
+logs/
+
+# Ignore dependency files
+node_modules/
+vendor/
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore any files with a .tmp extension
+*.tmp
+
+# Ignore any files with a .log extension
+*.log
+
+# Ignore any files in the 'tmp' directory
+tmp/
+
+# Ignore any files in the 'node_modules' directory
+node_modules/
