@@ -1,26 +1,26 @@
-# Ignore build and compilation files
-build/
-dist/
+# Entornos virtuales
+venv/
+.env/
 
-# Ignore log files
-logs/
+# Archivos de compilación
+*.pyc
+*.pyo
+__pycache__/
 
-# Ignore dependency files
-node_modules/
-vendor/
+# Archivos de configuración de editor (ej. VSCode, PyCharm)
+.vscode/
+.idea/
 
-# Ignore system files
-.DS_Store
-Thumbs.db
-
-# Ignore any files with a .tmp extension
-*.tmp
-
-# Ignore any files with a .log extension
+# Archivos de logs
 *.log
 
-# Ignore any files in the 'tmp' directory
-tmp/
+# Archivos temporales
+*.swp
 
-# Ignore any files in the 'node_modules' directory
-node_modules/
+# Configuración de distribuciones
+*.egg-info/
+dist/
+build/
+
+# Dependencias instaladas
+*.tar.gz
