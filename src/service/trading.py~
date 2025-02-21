@@ -5,6 +5,8 @@ import ta
 import logging
 from datetime import datetime
 from tabulate import tabulate
+import pytz
+
 
 from src.service.messageTelegram import send_telegram_message
 
@@ -67,20 +69,24 @@ def monitor_volume():
         last_close = df.iloc[-1]['close']  # Precio de cierre más reciente
         last_date = df.iloc[-1]['datetime']
 
+        # convert to Montreal time zone (ET)
+        montreal_tz = pytz.timezone('America/Montreal')
+        last_date_et = last_date.astimezone(montreal_tz)
+
         # Obtiene RSI(6)
         rsi_below_40, last_rsi = get_rsi()
 
         # Prepara datos para tabla
         table_data = [
             ["Fecha (UTC)", "Precio Actual", "Volumen", "MA(5) Volumen", "RSI(6)"],
-            [last_date, f"{last_close:.4f}", f"{last_volume:.2f}", f"{last_ma5:.2f}", f"{last_rsi:.2f}"]
+            [last_date_et, f"{last_close:.4f}", f"{last_volume:.2f}", f"{last_ma5:.2f}", f"{last_rsi:.2f}"]
         ]
 
         # Muestra en consola como tabla
         print("\n" + tabulate(table_data, headers="firstrow", tablefmt="grid"))
 
         # Registra en logs
-        logging.info(f"Fecha: {last_date}, Precio Actual: {last_close}, Volumen: {last_volume}, MA(5) Volumen: {last_ma5}, RSI(6): {last_rsi}")
+        logging.info(f"Fecha: {last_date_et}, Precio Actual: {last_close}, Volumen: {last_volume}, MA(5) Volumen: {last_ma5}, RSI(6): {last_rsi}")
 
         # Condición: volumen > 2x MA(5)
         if last_volume > 2 * last_ma5:
@@ -90,7 +96,7 @@ def monitor_volume():
             # 🔥 Envía alerta si se cumplen todos los criterios
             if price_up and rsi_below_40:
                 message = (f"🔥ALERTA FUERTE: Todos los criterios se cumplen 🚀\n"
-                           f"Fecha: {last_date}\n"
+                           f"Fecha: {last_date_et}\n"
                            f"Precio Actual: {last_close:.4f}\n"
                            f"RSI(6): {last_rsi:.2f}\n"
                            f"Volumen: {last_volume:.2f}\n"
