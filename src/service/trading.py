@@ -3,7 +3,6 @@ import time
 import pandas as pd
 import ta
 import logging
-from datetime import datetime
 from tabulate import tabulate
 import pytz
 

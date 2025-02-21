@@ -2,9 +2,9 @@ name: Build and Test
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]  # Replace 'main' with your default branch name if needed
   pull_request:
-    branches: [ main ]
+    branches: [main]  # Replace 'main' with your default branch name if needed
 
 permissions:
   contents: read
@@ -17,13 +17,14 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: Set up Python 3.10
-      uses: actions/setup-python@v5  # Use v5 instead of v3
+      uses: actions/setup-python@v5
       with:
         python-version: "3.10"
 
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
+        pip install flake8  # Explicitly install flake8
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
     - name: Lint with flake8
