@@ -1,4 +1,4 @@
-from src.service.Trading import monitor_volume
+from src.service.trading import monitor_volume
 import logging
 
 # Press the green button in the gutter to run the script.
