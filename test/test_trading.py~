@@ -1,0 +1,53 @@
+import unittest
+from unittest.mock import patch, MagicMock
+import pandas as pd
+import ccxt
+import numpy as np
+import ta.momentum
+from src.service.trading import get_volume_data, get_price_change_last_hour, get_rsi
+
+# Mock Exchange
+exchange = ccxt.binance()
+
+
+class TestTradingLogic(unittest.TestCase):
+
+    @patch.object(exchange, 'fetch_ohlcv')
+    def test_get_volume_data(self, mock_fetch_ohlcv):
+        """Test get_volume_data() returns correct DataFrame."""
+        mock_fetch_ohlcv.return_value = [
+            [1640995200000, 100, 110, 90, 105, 500],
+            [1640995260000, 105, 112, 102, 110, 600],
+            [1640995320000, 110, 115, 107, 113, 700],
+            [1640995380000, 113, 120, 111, 118, 800],
+            [1640995440000, 118, 125, 115, 123, 900],
+        ]
+
+        df = get_volume_data()
+        self.assertEqual(len(df), 25)
+        self.assertIn('MA5', df.columns)
+        self.assertAlmostEqual(df['MA5'].iloc[-1], np.mean([500, 600, 700, 800, 900]), delta=1e-5)
+
+    @patch.object(exchange, 'fetch_ohlcv')
+    def test_get_price_change_last_hour(self, mock_fetch_ohlcv):
+        """Test get_price_change_last_hour() returns True when price increases."""
+        mock_fetch_ohlcv.return_value = [
+            [1640995200000, 100, 110, 90, 105, 500],  # Previous close = 105
+            [1640995260000, 105, 112, 102, 110, 600],  # Last close = 110
+        ]
+
+        self.assertTrue(get_price_change_last_hour())
+
+    @patch.object(exchange, 'fetch_ohlcv')
+    def test_get_rsi(self, mock_fetch_ohlcv):
+        """Test get_rsi() returns a correct RSI value."""
+        prices = [100, 105, 102, 107, 103, 108, 110, 112, 109, 111, 115, 118, 120, 122, 119, 121, 123, 125, 127, 130]
+        mock_fetch_ohlcv.return_value = [[i, 0, 0, 0, price, 0] for i, price in enumerate(prices)]
+
+        rsi_below_40, last_rsi = get_rsi()
+        self.assertIsInstance(last_rsi, float)
+        self.assertTrue(0 <= last_rsi <= 100)
+
+
+if __name__ == '__main__':
+    unittest.main()

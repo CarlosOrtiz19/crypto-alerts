@@ -28,7 +28,7 @@ def get_volume_data():
     df['datetime'] = pd.to_datetime(df['timestamp'], unit='ms', utc=True)
 
     # Calcular MA(5) del volumen
-    df['MA5'] = df['volume'].rolling(window=ma_period).mean()
+    df['MA5'] = df['volume'].rolling(window=ma_period).mean().dropna()
 
     return df
 
